@@ -67,9 +67,20 @@ def main():
 	#min_max_scaler = preprocessing.MinMaxScaler()
 	#mnist.data = min_max_scaler.fit_transform(mnist.data)
 	mnist.data = mnist.data/255.0
-	trainX,testX,trainY,testY = train_test_split(mnist.data,mnist.target,test_size=0.3)
-	trainY = trainY.astype(np.int)
-	testY = testY.astype(np.int)
+	mnist.target = mnist.target.astype(np.int32)
+	seed = np.random.randint(1,30000)
+	rand = np.random.RandomState(seed)
+	items = len(mnist.target)
+	indices = rand.randint(items, size = 70000)
+	trindex = indices[0:50000]
+	tsindex = indices[50000:]
+
+	trainX = mnist.data[trindex]
+	testX = mnist.data[tsindex]
+	trainY = mnist.target[trindex]
+	testY = mnist.target[tsindex]
+
+	#trainX,testX,trainY,testY = train_test_split(mnist.data,mnist.target,test_size=0.3)
 	mtrain,ntrain = trainX.shape
 	mtest,ntest = testX.shape
 

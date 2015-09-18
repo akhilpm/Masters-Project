@@ -62,15 +62,24 @@ def arc_cosine(X, Y):
 #trainX, testX, trainY, testY = train_test_split(X, Y, test_size = 0.3)
 #trainX, trainY = load_svmlight_file("/home/akhi/Documents/miniproject/egMulticlass/data/train.dat")
 #testX, testY = load_svmlight_file("/home/akhi/Documents/miniproject/egMulticlass/data/test.dat")
-startTime = time.time()
+start = time.time()
 
 mnist = fetch_mldata('MNIST original')
-trainX, testX, trainY, testY = train_test_split(mnist.data, mnist.target, test_size = 0.3, random_state=42)
+mnist.target = mnist.target.astype(np.int32)
+#seed = np.random.randint(1,30000)
+rand = np.random.RandomState(1234)
+items = len(mnist.target)
+indices = rand.randint(items, size = 40000)
+trindex = indices[0:30000]
+tsindex = indices[30000:]
 
-trX = trainX[0:9000]
-tsX = testX[0:9000]
-trY = trainY[0:9000]
-tsY = testY[0:9000]
+
+#trainX, testX, trainY, testY = train_test_split(mnist.data, mnist.target, test_size = 0.3, random_state=42)
+
+trainX = mnist.data[trindex]
+testX = mnist.data[tsindex]
+trainY = mnist.target[trindex]
+testY = mnist.target[tsindex]
 #sss = StratifiedShuffleSplit(mnist.target, 1, test_size=0.1, train_size=0.1, random_state=0)
 #for train_index, test_index in sss:
 #	trainX, testX = mnist.data[train_index], mnist.data[test_index]
@@ -79,14 +88,16 @@ tsY = testY[0:9000]
 
 clf = svm.SVC(kernel=arc_cosine)
 #clf = svm.SVC(kernel = 'rbf', C=2.8, gamma=.0073) #gaussian kernel is used
-clf.fit(trX, trY)
+clf.fit(trainX, trainY)
 
-pred = clf.predict(tsX)
-print accuracy_score(tsY, pred)
-print('total : %d, correct : %d, incorrect : %d\n' %(len(pred), np.sum(pred == tsY), np.sum(pred != tsY)))
+pred = clf.predict(testX)
+print accuracy_score(testY, pred)
+print('total : %d, correct : %d, incorrect : %d\n' %(len(pred), np.sum(pred == testY), np.sum(pred != testY)))
 
-pred = clf.predict(trX)
-print accuracy_score(trY, pred)
-print('total : %d, correct : %d, incorrect : %d\n' %(len(pred), np.sum(pred == trY), np.sum(pred != trY)))
+print('Test Time : %f Minutes\n' %((time.time()-start)/60))
 
-print('Execution Time : %f\n' %(time.time()-startTime))
+pred = clf.predict(trainX)
+print accuracy_score(trainY, pred)
+print('total : %d, correct : %d, incorrect : %d\n' %(len(pred), np.sum(pred == trainY), np.sum(pred != trainY)))
+
+print('Execution Time : %f Minutes\n' %((time.time()-start)/60))
