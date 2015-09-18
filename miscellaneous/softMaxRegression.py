@@ -24,8 +24,8 @@ def costFunction(theta,trainX,trainY):
 	theta_vec = theta[trainY-1]
 	theta_dash = np.transpose(theta)
 	temp = trainX*theta_vec
-	temp = ne.evaluate('sum(temp,axis=1)')
-	temp = ne.evaluate('exp(temp)') #parallelized
+	temp = np.sum(temp,axis=1)
+	temp = np.exp(temp) #parallelized
 	hyp_sum = np.zeros(m)
 	for i in np.arange(m):
 		hyp_sum[i] = np.sum(np.exp(np.dot(trainX[i],theta_dash)))
@@ -33,8 +33,8 @@ def costFunction(theta,trainX,trainY):
 	#calculate the hypothesis value
 	#gc.collect()
 	temp /= hyp_sum
-	hyp = ne.evaluate('log(temp)')
-	jval = -ne.evaluate('sum(hyp)')/m + lambdaa/2*ne.evaluate('sum(theta*theta)')
+	hyp = np.log(temp)
+	jval = -np.sum(hyp)/m + lambdaa/2*np.sum(theta*theta)
 
 	#compute the gradient wrt to all theta_k
 	grad = np.random.random_sample((num_classes,n))
@@ -43,8 +43,8 @@ def costFunction(theta,trainX,trainY):
 		pos = np.ones(m,dtype=int)*k
 		theta_vec = theta[pos]
 		temp = trainX*theta_vec
-		temp = ne.evaluate('sum(temp,axis=1)')
-		temp = ne.evaluate('exp(temp)')
+		temp = np.sum(temp,axis=1)
+		temp = np.exp(temp)
 		hyp = temp/hyp_sum
 		gradK = gradK-hyp
 		gradK = gradK.reshape((m, 1))
@@ -60,7 +60,7 @@ def main():
 	global lambdaa, ntrain, num_classes 
 	start = time.time()
 	lambdaa = 0.00001  
-	max_iterations = 500
+	max_iterations = 100
 
 	#Load the Digit Data Set
 	mnist = fetch_mldata('MNIST original')
