@@ -28,9 +28,9 @@ def compute_J(N, theta):
 		return np.zeros(theta.shape)
 
 
-def arc_cosine(X, Y):
+def arc_cosine_vector(X, Y):
 	"""param = a vector of n(degree) values at each layer """
-	param = np.array([1,1,1,1])
+	param = np.array([1,1,1,1,1])
 	no_of_layers = len(param)
 
 
@@ -52,7 +52,17 @@ def arc_cosine(X, Y):
 			temp2 = np.multiply(np.power(temp2, n_l), compute_J(n_l, zero2)) / np.pi
 
 
-	return M		
+	return M
+
+def arc_cosine(X, Y):
+	lenX = X.shape[0]
+	incr = 1000
+	M = np.zeros((lenX, Y.shape[0]))
+	for i in range(0,lenX,incr):
+		M[i:i+incr] = arc_cosine_vector(X[i:i+incr], Y)
+
+	return M	
+
 
 
 def main():
@@ -64,9 +74,9 @@ def main():
 	seed = np.random.randint(1,30000)
 	rand = np.random.RandomState(seed)
 	items = len(mnist.target)
-	indices = rand.randint(items, size = 35000)
-	trindex = indices[0:20000]
-	tsindex = indices[20000:]
+	indices = rand.randint(items, size = 70000)
+	trindex = indices[0:55000]
+	tsindex = indices[55000:]
 
 	W, b = mnistEncode.execute_sparse_autoencoder(mnist)
 
@@ -101,7 +111,7 @@ def main():
 	#	trainY, testY = mnist.target[train_index], mnist.target[test_index]
 
 
-	clf = svm.SVC(kernel=arc_cosine)
+	clf = svm.SVC(kernel=arc_cosine, cache_size=2048)
 	#clf = svm.SVC(kernel = 'poly') #gaussian kernel is used
 	clf.fit(trainX, trainY)
 
