@@ -37,7 +37,7 @@ def compute_J(N, theta):
 def arc_cosine(X, Y):
   """param = a vector of n(degree) values at each layer """
   print X.shape
-  param = np.array([3,2,2,1])
+  param = np.array([2,1,1,1])
   no_of_layers = len(param)
 
 
@@ -72,7 +72,7 @@ pca = decomposition.PCA(n_components=2)
 pca.fit(X)
 X = pca.transform(X)
 
-h = 0.2  # step size in the mesh
+h = 0.03  # step size in the mesh
 
 # we create an instance of SVM and fit out data.
 #clf = svm.SVC(kernel=my_kernel)
