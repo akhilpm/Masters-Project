@@ -80,6 +80,8 @@
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
 \usepackage{commath} % For norm
+\usepackage{multirow}
+\usepackage{caption}
 
 %-===========-MY ADDITIONS-======================
 %gets rid of bottom navigation bars
@@ -342,7 +344,7 @@ The constraints states that for each training example, $(x_i, y_i)$ the score $w
 
 
 \begin{frame}
-\frametitle{StructSVM : Problem Formulation}
+\frametitle{StructSVM : Challenges}
 \begin{itemize}
 \item This optimization problem has $\mathcal{O}(m|\mathcal{Y}|)$ \textbf{number of constraints}, where $|\mathcal{Y}|$ is typically extremely large(usually exponential to the description length of y). This makes standard QP solvers unsuitable for this type of problem.
 
@@ -354,6 +356,37 @@ The constraints states that for each training example, $(x_i, y_i)$ the score $w
 \end{itemize}
 
 \end{frame}
+
+
+\begin{frame}
+\frametitle{StructSVM : Experimental Results on Small Datasets}
+\begin{table}[htb]
+\centering
+\captionsetup{justification=centering}
+\begin{tabular}{| l | l | l |}
+\toprule
+\textbf{Dataset} & \textbf{Arc-Cosine Kernel} & \textbf{Other Kernel(best)}\\
+\midrule
+Scene Segentation & 69.65\% & 69.4\% \\
+(multilabel - 6 class) & & \\
+\hline
+Vehicle Dataset & 73.52\% & 75.1\% \\
+(multiclass - 4 class) & & \\
+\hline
+Iris Dataset & 98.33\% & 96.67\% \\
+(multiclass - 3 class) & & \\
+\hline
+Breast Cancer Wiscosin & 99.02\% & 99.02\% \\
+(binary) & & \\
+\hline
+Synthetic Data & 66.15\% & 67.45\% \\
+(multiclass - 7 class) & & \\
+\bottomrule
+\end{tabular}
+\caption{Performance comparison of Arc-cosine kernel to other kernels on small datasets in StructSVM framework}
+\end{table}
+\end{frame}
+
 
 \section{Future Plans}
 
