@@ -125,12 +125,25 @@ Supervisor : Sumitra S \\ % Your institution for the title page
 \section{Review of Arc-cosine Kernel} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
 %------------------------------------------------
 \begin{frame}
+\frametitle{Motivation}
+Recent works in machine learning tends to prefer deep architectures over shallow ones on many learning tasks due to
+\begin{itemize}
+\item their ability to \textbf{learn complex mappings} by transforming their inputs through multiple layers of non-linear processsing.
+\item the wide range of functions that can be parameterized by composing weakly nonlinear transformations.
+\item their potential for \textbf{combining unsupervised and supervised methods} in the learning stages.
+\end{itemize}
+But the potential of deep learning is utilized for neural network models only.\\
+We explore the possibility of deep learning in kernel machines.
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Review of Arc-cosine Kernel}
-Let x,y be two inputs in $\mathbb{R}^d$. Define $\theta$ as the angle between them given by
+Let x,y be two inputs in $\mathbb{R}^d$. Define $\theta$ as the angle between them.
 \[ \theta = cos^{-1}\left ( \frac{x\cdot y}{\left \| x \right \| \left \| y \right \|} \right ) \]
 Then the kernel function computed by the Arc-cosine kernel is
 \[ k_n(x,y) = \frac{1}{\pi}\left \| x \right \|^n \left \| y \right \|^n J_n(\theta) \]
-where n is called the degree of the kernel and
+where n is called the \textbf{degree of the kernel} and
 \[ J_n(\theta) = (-1)^n(sin\theta)^{2n+1} \left ( \frac{1}{sin\theta} \frac{\partial}{\partial \theta} \right )^n \left ( \frac{\pi-\theta}{sin\theta} \right ) \]
 
 \end{frame}
@@ -148,13 +161,13 @@ hence the name Arc-cosine kernel is given!
 
 \begin{frame}
 \frametitle{RKHS of Arc-cosine kernel \& Neural Networks}
-Consider the single layer neural network shown below with weights $W_{ij}$ connects the $j^{th}$ input unit to the $i^{th}$ output unit. The network maps input $x$ to output $f(x)$ by applying a non-linear map 
+Consider a single layer neural network with weights $W_{ij}$ connects the $j^{th}$ input unit to the $i^{th}$ output unit. The network maps input $x$ to output $f(x)$ by applying a non-linear map 
 \[ f(x) = g(W \cdot x) \]
 where the non-linearity is described by the network`s activation function
 \[g_n(z) = \Theta(z)z^n \]
 with 
 \[ \Theta(z) = \frac{1}{2}(1+sign(z)) \]
-this activation function is called one-sided polynomial activation function, whose graph for different n values is also shown below.
+this activation function is called \textbf{one-sided polynomial activation function}, whose graph for different n values is also shown below.
 \end{frame}
 
 \begin{frame}
@@ -162,6 +175,19 @@ this activation function is called one-sided polynomial activation function, who
 \begin{figure}
 \includegraphics[width=1.0\linewidth, height=7cm]{figures/neuralnet}
 \end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{RKHS of Arc-cosine kernel \& Neural Networks}
+Let $f(x)$ and $f(y)$ be the outputs corresponding to inputs $x$ and $y$. Then the inner product of $f(x)$ and $f(y)$ is
+\[ f(x)\cdot f(y) = \sum_{i=1}^m \Theta(w_i\cdot x) \Theta(w_i\cdot y)(w_i\cdot x)^n (w_i\cdot y)^n\]
+\begin{itemize}
+\item $w_i$ = the $i^{th}$ row of weight matrix $W$ 
+\item  $m$ = the no of output units.
+\end{itemize}
+Assume $W_{ij}$ are Gaussian distributed with zero mean and unit variance and the network has an infinite number of output units. Then
+\[ lim_{m\rightarrow \infty} \frac{2}{m}f(x)\cdot f(y) = k_n(x,y) \]
+\[ k_n(x,y) = 2\int dw \frac{e^{-\frac{\left \| w^2 \right \|}{2}}}{(2\pi )^{d/2}} \Theta (w\cdot x) \Theta (w\cdot y) (w\cdot x)^n (w\cdot y)^n\]
 \end{frame}
 
 %\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
@@ -178,7 +204,9 @@ this activation function is called one-sided polynomial activation function, who
 \end{itemize}
 An autoencoder is a neural network trained with backpropagation algorithm (using unsupervised learning) by gradient descent.\\
 
-The aim of an auto-encoder is to learn a compressed, distributed representation (encoding) for a set of data, typically for the purpose of dimensionality reduction.
+\begin{block}{}
+Autoencoder learns a \textbf{compressed, distributed representation} (encoding) for a set of data, typically for the purpose of dimensionality reduction.
+\end{block}
 \end{frame}
 
 \begin{frame}
@@ -193,14 +221,14 @@ The aim of an auto-encoder is to learn a compressed, distributed representation 
 \begin{itemize}
 \item A coding is said to be \textbf{sparse} when each item is encoded by the strong activation of a relatively small set of neurons.
 \item By enforcing sparse coding requirement, we can limit the number of hidden units that can be activated by each input pattern.
-\item Given a potentially large set of input patterns, sparse coding algorithms (e.g. Sparse Autoencoder) attempt to automatically find \textit{a small number of representative patterns which, when combined in the right proportions, reproduce the original input patterns}. The sparse coding for the input then consists of those representative patterns.
+\item Given a potentially large set of input patterns, sparse coding algorithms (e.g. Sparse Autoencoder) attempt to automatically find \textbf{a small number of representative patterns which, when combined in the right proportions, reproduce the original input patterns}. The sparse coding for the input then consists of those representative patterns.
 \item A sparse autoencoder includes a sparseness constraint on hidden layer activation that is enforced by the addition of the Kullback-Leibler (KL) divergence term to the objective function.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Sparse Autoencoder}
-let $\textstyle{a^{(2)}_j(x)}$ denote the activation of  hidden unit $\textstyle{j}$ when the network is given a specific input $\textstyle{x}$. Further, let 
+Let $\textstyle{a^{(2)}_j(x)}$ denote the activation of  hidden unit $\textstyle{j}$ when the network is given an input $\textstyle{x}$. Further, let 
 \[\quad \hat{ \rho_j }= \frac{1}{m} \sum_{i=1}^m \left[ a^{(2)}_j(x^{(i)}) \right] \]
 be the average activation of hidden unit $\textstyle{j}$ averaged over the training set. We would like to enforce the constraint
 \[ \quad \hat{\rho_j}= \rho \]
@@ -212,20 +240,22 @@ where $\textstyle{\rho}$ is a sparsity parameter, typically a small value close 
 The penalty term is 
 \[ \sum_{j=1}^{s_2} {\rm KL}(\rho || \hat\rho_j) = \sum_{j=1}^{s_2} \rho \log \frac{\rho}{\hat\rho_j}
  + (1-\rho) \log \frac{1-\rho}{1-\hat\rho_j} \]
- where $s_2$ is the no of nodes in hidden layer. $\textstyle{{\rm KL}(\rho || \hat\rho_j)=0}$ if $\textstyle{\hat{\rho_j} = \rho}$, otherwise it increases monotonically as $\textstyle{\hat{\rho_j}}$ diverges from $\textstyle{\rho}$. Then the overall cost function now becomes
+ $s_2$ = no. of nodes in hidden layer.\\
+ $\textstyle{{\rm KL}(\rho || \hat\rho_j)=0}$ if $\textstyle{\hat{\rho_j} = \rho}$, otherwise it increases monotonically as $\textstyle{\hat{\rho_j}}$ diverges from $\textstyle{\rho}$. Then the overall cost function now becomes
  \[J_{\rm sparse}(W,b) = J(W,b) + \beta \sum_{j=1}^{s_2} {\rm KL}(\rho || \hat\rho_j)\]
- where $\textstyle{J(W,b)}$ is the usual NN cost function defined as
-\[ J(W,b) = \left[ \frac{1}{m} \sum_{i=1}^m J(W,b;x^{(i)},y^{(i)}) \right]
-                       + \frac{\lambda}{2} \sum_{l=1}^{n_l-1} \; \sum_{i=1}^{s_l} \; \sum_{j=1}^{s_{l+1}} \left( W^{(l)}_{ji} \right)^2 \]
+
+The parameter $\textstyle{\beta}$ controls the weight of the sparsity penalty term.
  
 \end{frame}
 
 \begin{frame}
 \frametitle{Sparse Autoencoder}
+ Here $\textstyle{J(W,b)}$ is the usual NN cost function defined as
+\[ J(W,b) = \left[ \frac{1}{m} \sum_{i=1}^m J(W,b;x^{(i)},y^{(i)}) \right]
+                       + \frac{\lambda}{2} \sum_{l=1}^{n_l-1} \; \sum_{i=1}^{s_l} \; \sum_{j=1}^{s_{l+1}} \left( W^{(l)}_{ji} \right)^2 \]
 \[= \left[ \frac{1}{m} \sum_{i=1}^m \left( \frac{1}{2} \left\| h_{W,b}(x^{(i)}) - y^{(i)} \right\|^2 \right) \right]
                        + \frac{\lambda}{2} \sum_{l=1}^{n_l-1} \; \sum_{i=1}^{s_l} \; \sum_{j=1}^{s_{l+1}} \left( W^{(l)}_{ji} \right)^2 \]
 here $\lambda$ is the regularization parameter.\\
-The parameter $\textstyle{\beta}$ controls the weight of the sparsity penalty term.
 
 \end{frame}
 
@@ -253,19 +283,24 @@ The parameter $\textstyle{\beta}$ controls the weight of the sparsity penalty te
 
 \begin{frame}
 \frametitle{Analysis of Decision Boundary}
-\begin{figure}
-\includegraphics[width=0.7\linewidth, height=6.5cm]{figures/db1_2111}
-\caption{when non-linearity is low(kernel parameter = [2,1,1,1])}
-\end{figure}
+Aim : To analyse the  decision boundary produced by the arc-cosine kernel in input space. 
+\begin{itemize}
+\item IRIS dataset is chosen.
+\item The dimension of the data is reduced to 2D by using PCA.
+\item Grid points are selected from the max \& min range of the reduced data.
+\item All the gridpoints are evaluated and assigned one class.  
+\end{itemize}
 \end{frame}
+
 
 \begin{frame}
 \frametitle{Analysis of Decision Boundary}
 \begin{figure}
-\includegraphics[width=0.7\linewidth, height=6.5cm]{figures/db2_3221}
-\caption{when non-linearity is high(kernel parameter = [3,2,2,1])}
+\includegraphics[width=0.7\linewidth, height=6.5cm]{figures/db1_2111}
+\caption{kernel parameter = [2,1,1,1]}
 \end{figure}
 \end{frame}
+
 %------------------------------------------------
 
 %------------------------------------------------
@@ -289,7 +324,7 @@ Here $\bigtriangleup(y, \overline{y})$ denotes the \textbf{loss} associated with
 \[ \bigtriangleup(y, \overline{y}) \geq 0 \textrm{ for } y \neq \overline{y} \]
 \begin{block}{Method}
 StructSVM selects an $h \in \mathcal{H}$ that minimizes a regularized empirical risk\\
-on $S$. The general idea here is to learn a discriminant function $\mathnormal{f} : \mathcal{X} \times \mathcal{Y} \longrightarrow \mathbb{R}$ over input/output pairs from which one derives a prediction by maximizing $\mathnormal{f}$ over all $y \in \mathcal{Y}$ for a given input $x$
+on $S$. The general idea here is to learn a discriminant function $\mathnormal{f} : \mathcal{X} \times \mathcal{Y} \longrightarrow \mathbb{R}$ over input/output pairs from which one derives a prediction by maximizing $\mathnormal{f}$ over all $y \in \mathcal{Y}$ for a given input $x$.
 \end{block}
 \[ h_w(x) =  \underset{y \in \mathcal{Y}}{\arg\max} \mathnormal{f}_w(x,y) \]
 We assume that $\mathnormal{f}_w(x,y)$ takes the form of a linear function
@@ -298,23 +333,23 @@ We assume that $\mathnormal{f}_w(x,y)$ takes the form of a linear function
 
 \begin{frame}
 \frametitle{StructSVM : Problem Formulation}
-where $w \in \mathbb{R}^N$ is a parameter vector and $\Psi(x,y)$ is a combined feature space of relating input $x$ and output $y$.
+Here $w \in \mathbb{R}^N$ is a parameter vector and $\Psi(x,y)$ is a \textbf{combined feature space} relating input $x$ and output $y$.
 \begin{block}{Inuitive picture for $\mathnormal{f}_w(x,y)$}
 We can think of $\mathnormal{f}_w(x,y)$ as a compatibility function that measures how well the output $y$ matches the given input $x$.
 \end{block}
 The flexibility in designing $\Psi$ allows us to employ StructSVMs to learn models for problems as diverse as Natural Language Parsing(NLP), Protein Sequence Alignment, Image Segmentation etc.\\
 Joachims et.al proposed two different ways of using a hinge loss to convex upper bound the loss.\\
-1. \textbf{Margin Rescaling}(MR)\\
-In MR the position of the hinge is adapted keeping the slope fixed. 
 \end{frame}
 
 \begin{frame}
 \frametitle{StructSVM : Problem Formulation}
-\[ \bigtriangleup_{MR}(y, h_w(x)) =  \underset{y \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y}) - \langle w , \Psi(x,y) \rangle + \langle w , \Psi(x,\overline{y}) \rangle \} \]
+1. \textbf{Margin Rescaling}(MR)\\
+In MR the position of the hinge is adapted keeping the slope fixed. 
+\[ \bigtriangleup_{MR}(y, h_w(x)) =  \underset{\overline{y} \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y}) - \langle w , \Psi(x,y) \rangle + \langle w , \Psi(x,\overline{y}) \rangle \} \]
 \[ \geq \bigtriangleup(y, h_w(x)) \]
 1. \textbf{Slack Rescaling}(SR)\\
 In SR the slope is adjusted while keeping the position of the hinge fixed.
-\[ \bigtriangleup_{SR}(y, h_w(x)) =  \underset{y \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y})(1 - \langle w , \Psi(x,y) \rangle + \langle w , \Psi(x,\overline{y}) \rangle) \} \]
+\[ \bigtriangleup_{SR}(y, h_w(x)) =  \underset{\overline{y} \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y})(1 - \langle w , \Psi(x,y) \rangle + \langle w , \Psi(x,\overline{y}) \rangle) \} \]
 \[ \geq \bigtriangleup(y, h_w(x)) \]
 This leads to the following optimization problems, where each slack variable $\xi_i$ is equal to the respective $\bigtriangleup_{MR}(y_i, h_w(x_i))$ or $\bigtriangleup_{SR}(y_i, h_w(x_i))$ for the training example $(x_i, y_i)$.
 \end{frame}
@@ -323,7 +358,7 @@ This leads to the following optimization problems, where each slack variable $\x
 \begin{frame}
 \frametitle{StructSVM : Problem Formulation}
 \begin{block}{n-Slack StructSVM with Margin Rescaling}
-\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{n} \sum_{i=1}^m \xi_i \]
+\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{m} \sum_{i=1}^m \xi_i \]
 \[ \textrm{s.t } \forall \overline{y_1} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_1, y_1) - \Psi(x_1, \overline{y_1})] \geq \bigtriangleup(y_1, \overline{y_1}) - \xi_1 \]
 \[ \vdots \]
 \[ \textrm{s.t } \forall \overline{y_m} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_m, y_m) - \Psi(x_m, \overline{y_m})] \geq \bigtriangleup(y_m, \overline{y_m}) - \xi_m \]
@@ -334,7 +369,7 @@ This leads to the following optimization problems, where each slack variable $\x
 \begin{frame}
 \frametitle{StructSVM : Problem Formulation}
 \begin{block}{n-Slack StructSVM with Slack Rescaling}
-\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{n} \sum_{i=1}^m \xi_i \]
+\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{m} \sum_{i=1}^m \xi_i \]
 \[ \textrm{s.t } \forall \overline{y_1} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_1, y_1) - \Psi(x_1, \overline{y_1})] \geq 1 - \frac{\xi_1}{\bigtriangleup(y_1, \overline{y_1})} \]
 \[ \vdots \]
 \[ \textrm{s.t } \forall \overline{y_m} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_m, y_m) - \Psi(x_m, \overline{y_m})] \geq 1 - \frac{\xi_m}{\bigtriangleup(y_m, \overline{y_m})} \]
