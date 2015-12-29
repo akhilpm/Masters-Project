@@ -87,7 +87,7 @@ def main():
 	testX = mnist.data[tsindex]
 	trainY = mnist.target[trindex]
 	testY = mnist.target[tsindex]
-
+	
 	trainX = np.transpose(trainX)
 	testX = np.transpose(testX)
 	trainX = mnistEncode.extract_feature(W,b, trainX)
