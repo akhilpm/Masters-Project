@@ -1,0 +1,7 @@
+{
+	"num_classes" : 10,
+	"num_features" : 64,
+	"sizePsi" : 640,
+	"C" : 100.0,
+	"loss_type" : 1
+}
