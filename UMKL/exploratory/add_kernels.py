@@ -129,9 +129,16 @@ def uncertainity_sampling(trainX, trainY):
 	return kpcaX
 
 
+def strategic_sampling(trainX, trainY):
+	""" digits like 7,8,9,4 are more confusing to the learner than 1,2 etc. This strategy
+	aims to choose more points for denoising in case of highly confused group than least
+	confused one. """
+
+	need = np.array([260, 225, 280, 300, 350, 290, 285, 320, 330, 360])
 
 
-def multi_KPCA(trainX, trainY, testX, param, k_type):
+
+def multi_KPCA(trainX, trainY, testX, testY, param, k_type):
 	""" KPCA using combination of kernels """
 
 	kpca = KernelPCA(kernel='precomputed')
@@ -139,8 +146,8 @@ def multi_KPCA(trainX, trainY, testX, param, k_type):
 	kpcaX = trainX[0:3000]
 	kpcaY = trainY[0:3000]
 
-	for i in range(10):
-		print np.sum(kpcaY==i),
+	#for i in range(10):
+	#	print np.sum(kpcaY==i),
 
 	kpca_train = np.zeros((3000, 3000))
 	kernel_train = np.zeros((trainX.shape[0], 3000))
@@ -159,6 +166,7 @@ def multi_KPCA(trainX, trainY, testX, param, k_type):
 	testX_kpca = kpca.transform(kernel_test)
 
 	gc.collect()
+	get_individual_kernel_performance(kpcaX, trainX, trainY, testX, testY, k_type, param, mu)
 
 	return trainX_kpca, testX_kpca
 
@@ -177,41 +185,6 @@ def read_cmd_arguments(no_of_layers, no_of_kernels):
 	return param, k_type
 
 
-def select_features(trainX_kpca, testX_kpca, trainY):
-	""" selects the most informative features """
-
-	cvX = trainX_kpca[10000:,]
-	cvY = trainY[10000:]
-	trX = trainX_kpca[:10000,]
-	trY = trainY[:10000]
-
-	param = np.arange(15,301)
-	performance = np.zeros(len(param))
-	parameters = {'n_neighbors' : list(np.arange(15)+1)}
-	clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
-
-	for i in range(len(param)):
-		selector = SelectKBest(f_classif, k=param[i])
-		selector.fit(trX, trY)
-
-		trX_new = selector.transform(trX)
-		cvX_new = selector.transform(cvX)
-
-		clf.fit(trX_new, trY)
-		pred = clf.predict(cvX_new)
-		performance[i] = accuracy_score(cvY, pred)*100
-
-	bestK = param[np.argmax(performance)]	
-	#print(bestK)
-
-	selector = SelectKBest(f_classif, k=bestK)
-	selector.fit(trainX_kpca, trainY)
-	trainX = selector.transform(trainX_kpca)	
-	testX = selector.transform(testX_kpca)	
-
-	return trainX, testX
-
-
 
 def main():
 
@@ -219,8 +192,8 @@ def main():
 	warnings.filterwarnings("ignore")
 
 	#set the parameters
-	no_of_layers = 1
-	no_of_kernels = 5
+	no_of_layers = 5
+	no_of_kernels = 7
 	kparam = np.array([0,3,3])
 	coeff = np.zeros((no_of_layers, no_of_kernels))
 
@@ -253,9 +226,9 @@ def main():
 	#extract the features using KPCA
 	for i in xrange(no_of_layers):
 	
-		trainX_kpca, testX_kpca = multi_KPCA(trainX, trainY, testX, param[i], k_type[i])
+		trainX_kpca, testX_kpca = multi_KPCA(trainX, trainY, testX, testY, param[i], k_type[i])
 	
-		#trainX, testX = select_features(trainX_kpca, testX_kpca, trainY)
+
 		selector.fit(trainX_kpca, trainY)
 		trainX = selector.transform(trainX_kpca)
 		testX = selector.transform(testX_kpca)
@@ -263,6 +236,14 @@ def main():
 
 		print(trainX_kpca.shape)
 		print(trainX.shape)
+		np.save('trainX_feat'+str(i+1), trainX)
+		np.save('testX_feat'+str(i+1), testX)
+		parameters = {'n_neighbors' : list(np.arange(20)+1)}
+		clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
+		clf.fit(trainX, trainY)
+
+		pred = clf.predict(testX)
+		print(accuracy_score(testY, pred))
 		print('============================ Layer %d Completed ============================' %(i+1))
 
 	print(testX.shape)
@@ -275,8 +256,8 @@ def main():
 
 	#fit the svm model and compute accuaracy measure
 	parameters = {'n_neighbors' : list(np.arange(20)+1)}
-	#clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
-	clf = svm.SVC(kernel=arc_cosine, cache_size=2048)
+	clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
+	#clf = svm.SVC(kernel=arc_cosine, cache_size=2048)
 	clf.fit(trainX, trainY)
 
 
