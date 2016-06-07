@@ -1,0 +1,74 @@
+%\begin{appendices}
+\chapter{Derivation of the objective function $J(\mu)$}
+\label{derivation1}
+The objective function to be minimized is given by
+\[ \min_{k \in K_{conv}} \frac{1}{2}\sum_{i=1}^n \norm{x_i - \sum_{x_j \in B_i} k_{ij}x_j}^2 + \gamma* \sum_{i=1}^n \sum_{x_j \in B_i} k_{ij} \norm{x_i-x_j}^2 \]
+Expanding the norm on the first part of the sum
+\begin{equation}
+\begin{split}
+\min_{k \in K_{conv}} \frac{1}{2}\sum_{i=1}^n \bigg(\norm{x_i}^2 - 2*\sum_{x_j \in B_i} k_{ij} (x_i \cdot x_j)  + \\ k_i k_i^T \circ d_i d_i^T \circ X^TX \bigg) + \gamma* \sum_{i=1}^n \sum_{x_j \in B_i} k_{ij} \norm{x_i-x_j}^2
+\end{split}
+\label{new_obj}
+\end{equation}
+The notation `$\circ$' denotes elementwise multiplication of two vectors. Here the summation $\sum_{i=1}^n \norm{x_i}^2$ can be discarded, since it is independent of the optimization parameters. Substituting $X^TX = P$, 
+\[\sum_{x_j \in B_i} k_{ij} (x_i \cdot x_j) = k_i \circ d_i \circ p_i\]
+and 
+\[ \sum_{x_j \in B_i} k_{ij} \norm{x_i-x_j}^2 = k_i \circ d_i \circ v_i \]
+in \ref{new_obj} we will get the simplified objective function
+\begin{equation}
+\begin{split}
+\min_{k \in K_{conv}} \sum_{i=1}^n \bigg( k_i k_i^T \circ d_i d_i^T \circ P + \\ 2\big(\gamma*k_i \circ v_i \circ d_i - k_i \circ p_i \circ d_i\big) \bigg)
+\end{split}
+\label{simplified}
+\end{equation}
+Here $p_i$ and $v_i$ are columns of $P$ and $M$ corresponding to $x_i$ respectively. Substituting $k_i = \sum_{t=1}^m \mu_tk_{t,i}$ in \ref{simplified} we will get
+\[ \min_{\mu \in \Delta} \mu^T \Bigg( \sum_{t=1}^m \sum_{i=1}^n k_{t,i}k_{t,i}^T \circ d_i d_i^T \circ P \Bigg)^T \mu + z^T \mu \]
+which is the objective function $J(\mu)$. Here $[z]_t = \sum_{i=1}^n (2 \gamma v_i \circ d_i - 2 p_i \circ d_i)^T \mathit{k}_{t,i} $ and $\mathit{k}_{t,i} = \Big[ k^t(x_i, x_1), \ldots, k^t(x_i, x_n) \Big]^T $ is the $i^{th}$ column of the $t^{th}$ kernel matrix.
+
+\chapter{Derivation of cost function $\mathcal{J}(\alpha)$ in KFDA}
+\label{derivation2}
+The cost function is given as
+\begin{equation}
+\mathcal{J}(f) = \frac{f^TS_B^{\phi}f}{f^TS_W^{\phi}f} 
+\label{b_jw}
+\end{equation}
+We have
+\begin{equation}
+f^Tm_i^{\phi} = \frac{1}{n_i} \sum_{j=1}^n \sum_{k=1}^{n_i} \alpha_j k(x_j, x_k^i) = \alpha^T M_i
+\label{b_wmi}
+\end{equation}
+applying \ref{b_wmi} in the numerator of \ref{b_jw} we get
+\begin{equation*}
+\begin{aligned}
+f^TS_B^{\phi}f &= f^T(m_1^{\phi} - m_2^{\phi})(m_1^{\phi} - m_2^{\phi})^Tf \\
+&= (f^T m_1^{\phi}-f^Tm_2^{\phi}) \cdot (f^Tm_1^{\phi}-f^Tm_2^{\phi}) \\
+&= (\alpha^T M_1 - \alpha^T M_2) \cdot (\alpha^T M_1 - \alpha^T M_2) \\
+&= \alpha^T (M_1 - M_2)(M_1 - M_2)^T \alpha \\
+&= \alpha^T M \alpha
+\end{aligned}
+\end{equation*}
+where $M = (M_1-M_2)(M_1-M_2)^T$. Applying $f = \sum_{i=1}^n \alpha_i \phi(x_i)$ in the denominator of \ref{b_jw}
+\begin{equation}
+f^TS_W^{\phi}f = (\sum_{i=1}^n \alpha_i \phi(x_i))^T \sum_{j=1,2} \sum_{x \in X_j} (\phi(x)-m_j^{\phi})(\phi(x)-m_j^{\phi})^T (\sum_{i=1}^n \alpha_i \phi(x_i))
+\label{b_wsw}
+\end{equation}
+To simplify the notations, define
+\[ P_{ij} =  \sum_{x \in X_i} \phi(x_j) \cdot \phi(x) \]
+Then 
+\begin{equation}
+\sum_{i=1}^n \sum_{j=1,2} \sum_{x \in X_j} \alpha_i(\phi(x_i) \cdot \phi(x)) = \alpha^TP_1 + \alpha^T P_2
+\label{b_alphap}
+\end{equation}
+Applying \ref{b_alphap} in \ref{b_wsw} we get
+\begin{equation*}
+\begin{aligned}
+f^TS_W^{\phi}f &= (\alpha^T P_1 - \alpha^T M_1) \cdot (\alpha^T P_1 - \alpha^T M_1) + (\alpha^T P_2 - \alpha^T M_2) \cdot (\alpha^T P_2 - \alpha^T M_2) \\
+&= \alpha^T(P_1-M_1)(P_1-M_1)^T \alpha + \alpha^T(P_2-M_2)(P_2-M_2)^T \alpha \\
+&= \alpha^T K_1(I - \bm{1}_{n_1})K_1^T \alpha + \alpha^T K_2(I - \bm{1}_{n_2})K_2^T \alpha \\
+&= \alpha^T \Big(\sum_{i=1,2} K_i(I - \bm{1}_{n_i})K_i^T \Big) \alpha \\
+&= \alpha^T N \alpha
+\end{aligned}
+\end{equation*}
+where $K_j = \sum_{i=1}^n \sum_{x \in X_j} k(x_i, x)$, $I$ is the identity matrix, $\bm{1}_{n_j}$ is the matrix with with all entries $\frac{1}{n_j}$ and $N = \sum_{i=1,2} K_i(I - \bm{1}_{n_i})K_i^T$. Thus the cost function becomes
+\[\mathcal{J}(f) = \frac{f^TS_B^{\phi}f}{f^TS_W^{\phi}f} = \frac{\alpha^T M \alpha}{\alpha^T N \alpha} \]
+%\end{appendices}

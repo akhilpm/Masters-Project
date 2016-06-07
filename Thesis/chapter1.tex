@@ -1,0 +1,39 @@
+\chapter{Introduction}
+\label{chap_intro}
+Representation Learning is one of the key area in machine learning, where intense research works are being done spanning over decades. The choice of the representation has a considerable influence in the performance of learning algorithms (\cite{bengioRL} et al.). Representation Learning is also considered as an effective mechanism for transferring the prior knowledge of humans to the machine learning system. \cite{bengioAI} et al. broadly classified the architecture of the representation learning system  into deep and shallow architectures. Shallow architectures often assumes strong task specific priors, whereas deep architectures can support broad priors. Algorithms like SVM, single layer neural network etc. come under shallow architectures, and algorithms like deep belif networks, convolutional neural networks etc. belong to deep architectures.
+
+Deep Learning is a rapidly developing area among representation learning algorithms, which makes use of depth as a key criteria for producing good representations (hence they belong to deep architectures). \textit{In general, Deep Learning is a set of algorithms in machine learning that attempts to model high-level abstractions in data by using model architectures composed of multiple non-linear transformations}(\cite{bengioLDA} et al., \cite{bengioRL} et al.). Deep Learning methods are preferred over shallow ones in many complex learning tasks such as computer vision, speech recognition etc. due to: \textit{the wide range of functions that can be parameterized by composing weakly nonlinear transformations, the broad range of prior knowledge they can transfer to the learning system, the invariance being modelled by such systems against local changes in the input and their ability to learn more abstract concepts in an hierarchical fashion}(\cite{saul} et al., \cite{bengioAI} et al.).
+
+Though the idea of using such deep architectures for learning representations was known to machine learning researchers, two main factors deterred the wide use of deep learning algorithms: (i) the gradient-based methods often gets trapped in local minima which results in poor generalization capacity, (ii) training the networks with more than 2 or 3 layers was a big computational challenge. The \textit{greedy layerwise unsupervised pre-training} proposed by \cite{hintonDBN} et al. was a breakthrough in machine learning research as it tackled the difficulty in training such deep models. Using this method  a hierarchy of features can be learned one level at a time, using  unsupervised  techniques(\cite{bengioRL} et al.). This greedy layerwise unsupervised pre-training is used to initialize the weights of the network (unsupervised pre-training stage) and then the weights are fine-tuned with the given label information(supervised fine-tuning stage).
+
+The recent rise in computing power alleviated the second problem upto a considerable level. Efficient training methods are devised for learning networks with millions of parameters both on multi-core CPUs and GPUs(\cite{gpu1} et al., \cite{gpu2} et al.). Scalable deep learning models like \cite{graphlab} etc. are also developed in distributed cloud based environments.
+
+Armed with these tools deep learning witnessed a sudden boost since 2006, producing state-of-the-art results in several complex machine learning tasks like speech recognition(\cite{speechBest} et al.), visual object recognition(\cite{imagenet} et al., \cite{cifarBest} et al., \cite{mnistBest} et al.), natural language processing(\cite{nlpBest} et al.) etc. However, most of the deep learning algorithms are developed on top of neural network based models(\cite{lecunnCNN} et al., \cite{hintonDBN} et al.). 
+
+Many researchers had extensively studied the limitations of kernel machines in such problems. The analysis shown in \cite{bengioAI} et al. claims that the number of training examples required for a kernel machine with Gaussian kernel may grow linearly with the number of variations (change in the directions) of the target function. \cite{saul} et.al explored the concept of \textit{kernel methods based Deep Learning} by proposing Multi-layer Kernel Machines(MKMs). The architecture of MKMs consists multiple layers with each layer performing unsupervised feature extraction using kernel PCA\nomenclature{PCA}{Principal Component Analysis} proposed by \cite{kpca} et al. followed by supervised feature selection by ranking features based on their mutual information with class labels. They also proposed a multi-layer kernel function, which can mimic the computations of neural network based architecture.
+
+Inspired by the work of \cite{saul} et al., multi-layer kernel machines were explored  by many researchers (\cite{2l_mkl} et al., \cite{deep_mkl} et al.). Most of these researchers used multiple kernel learning (MKL) concepts in the layered architecture. Some of these works are using deep layerwise kernel models for automating the kernel learning task in SVMs. But there is less work done combining feature learning with MKMs and MKL. MKL in single layer for unsupervised feature extraction was studied by \cite{zhuang} et al. Much of the work done in this thesis is also focussed on MKL and MKMs for unsupervised feature learning to build a deep learning architecture for kernel machines.
+
+\section{Thesis Outline}
+\label{chap1_outline}
+The contents of this thesis are organized as six chapters. 
+
+The \autoref{chap_mkm} discusses the MKMs in detail, with empirical study on popular deep learning datasets. MKMs with mixed kernels are also tested on these datasets. Finally, some visualization (using tSNE algorithm) of the features learned by the model are also provided.
+
+The \autoref{chap_mlmkl}  describes the study of using MKL in MKMs. The formulation of the unsupervised MKL is given first, followed by empirical study and exploratory analysis on MKL in each layer of MKMs.
+
+The \autoref{chap_kfda} is devoted to discriminant analysis with multi-layer kernels. It includes a brief summary of KFDA algorithm and the results from empirical study.
+
+The \autoref{chap_struct} contains a study of multi-layer kernels on structured output spaces. Struct SVM, a large margin generalization of SVM to structured output spaces is chosen as the candidate algorithm for study, and analysis is done on multi-label and multi-class classification problems.
+
+The \autoref{chap_conc} gives the conclusion of this thesis work, along with some potential future directions to explore.
+
+\section{Contributions}
+\label{chap1_contri}
+The main contributions of this thesis can be summarized as follows:
+\begin{itemize}
+\item An in depth study is made on multi-layer kernel machines with single and mixed kernels.
+\item MKL concepts are introduced in MKMs by taking a combination of kernels in each layer, following an unsupervised learning paradigm. The contribution of each kernel in the MKL at every layer is analyzed. A comparative study is done with existing deep learning algiritms.
+\item A study on the discriminating power of multi-layer kernels is done with KFDA algorithm. Empirical results are compared with the performance of existing deep architectures.
+\item A comparative study between multi-layer and single layer kernels are done on structured output spaces. The problem instances chosen for the study is multi-label and multi-class classification problems.
+\end{itemize}

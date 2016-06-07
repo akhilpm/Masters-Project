@@ -1,0 +1,19 @@
+\chapter{Conclusion and Future Works}
+\label{chap_conc}
+This thesis presents a study of deep multi-layer kernels on supervised and unsupervised learning algorithms. In the supervised learning settings, multi-layer kernels are studied on structured output prediction problems and discriminant analysis methods. In the unsupervised learning settings, multi-layer kernels are used for feature learning task. In particular, we used MKMs and MKL for building a feature learning framework with kernel machines whose architecture and training is equivalent to existing deep learning algorithms.
+
+In the unsupervised feature learning model with MKMs we experimented with single kernel (arc-cosine kernel) and mixed kernels. In some cases, the mixed kernel version was found to be superior than their single kernel counterparts. Features learned by the MKMs were visualized with tSNE algorithm to understand the separability of different classes.
+
+Instead of using single kernel in each layer, a convex combination of multiple kernels were tried out using an unsupervised MKL formulation. The training of this model was done in a greedy layer-by-layer fashion. Experimental results indicates that, this ML-MKL model is superior to single-kernel MKMs. Though we had conducted empirical study on object recognition datasets like \textit{cifar10} and text classification datasets like \textit{20-newsgroups}, the results were not very impressive. In the case of \textit{20-newsgroups} classification, multiple layers might be making the similarity information in the kernel matrix more noisy, since the performance was degrading after each layer is added.  The empirical studies on supervised learning settings also gave fruitful results. The KFDA algorithm with multi-layer kernels showed competitive performance with state of the art deep learning algorithms. Structured output learning algorithms also works well when multi-layer kernels were used.
+
+\section{Future Works}
+The empirical study conducted in this thesis is giving many insights, from which we can list out some potential future directions to explore.
+
+The complexity of the model in terms of the number of layers and number of kernels in each layer are set by using  cross-validation techniques in our experiments. The optimal number of layers and optimal number of kernels in each layer characterizes the structure of ML-MKL. A thoretical study on the optimal structure of ML-MKL model is a future extension for this work.
+
+The training of ML-MKL framework in the current implementation is performed in a greedy layer-by-layer fashion, by iteratively adding layers. This can be thought of as unsupervised pre-training done in typical deep learning algorithms. Then we can devise a supervised fine-tuning mechanism for this model, by taking class labels into account, which may change either the kernel parameters or weights.
+
+The deep learning algorithms are found to be particularly effective for learning complex decision functions. Structured output prediction tasks like parse tree prediction, protein segment alignment prediction etc. need very complex decision functions. Thus, the deep multi-layer kernel machines can be studied in such domains.
+
+The results from KFDA with multi-layer kernels is having some interesting aspects. The algorithm is performing well, either when using a highly non-linear arc-cosine kernel or when very large number of layers are used in the kernel function. The obscurity behind the need of such complex kernels for 
+discriminant analysis can be explored further.

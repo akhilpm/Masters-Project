@@ -1,0 +1,527 @@
+%% ----------------------------------------------------------------
+%% Thesis.tex -- MAIN FILE (the one that you compile with LaTeX)
+%% ---------------------------------------------------------------- 
+
+% Set up the document
+\documentclass[a4paper, 12pt, oneside]{Thesis}  % Use the "Thesis" style, based on the ECS Thesis style by Steve Gunn
+%\graphicspath{Figures/}  % Location of the graphics files (set up for graphics to be in PDF format)
+
+
+% Include any extra LaTeX packages required
+
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{pbox}
+%\usepackage[square, numbers, comma, sort&compress]{natbib}  % Use the "Natbib" style for the references in the Bibliography
+\usepackage{verbatim}  % Needed for the "comment" environment to make LaTeX comments
+%\usepackage{graphicx}
+\usepackage{caption} \captionsetup[table]{skip=0pt}
+%\usepackage{subcaption}
+\usepackage{subfigure}
+\usepackage{setspace}
+\usepackage{vector}  % Allows "\bvec{}" and "\buvec{}" for "blackboard" style bold vectors in maths
+\usepackage{amsmath}
+\hypersetup{urlcolor=black, colorlinks=true}  % Colours hyperlinks in blue, but this can be distracting if there are many links.
+%\usepackage{nomencl}
+%\makeglossary
+\usepackage[ruled,norelsize]{algorithm2e}
+\usepackage{multirow}
+%\usepackage{tabularx}
+\usepackage{bm}
+\usepackage{nomencl} % for generating list of abbreviations
+\makenomenclature
+
+\renewcommand{\nomname}{List of Abbreviations}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+
+%% ----------------------------------------------------------------
+\begin{document}
+\frontmatter      % Begin Roman style (i, ii, iii, iv...) page numbering
+\setstretch{1.5} 
+\thispagestyle{empty}
+\newpage
+  \null
+  \setcounter{page}{0}
+  \parskip=0pt
+  \begin{center}%
+ 
+  \let \footnote \thanks
+  \vglue 0in % this makes top margin 2in
+  %\vskip 5ex%
+  \begin{spacing}{1.6}
+\textbf{\Large  A Study on Deep Multi-layer Kernel Machines}
+  \end{spacing}
+  \vspace{12 mm}
+          {\bf \em A Project Report }\par
+           \vskip 6ex%
+           {\normalsize \em submitted by \par}
+           \vskip 5ex%
+           {\bf \large\MakeUppercase{Akhil P M}\par}
+           \vskip 5ex%
+           {\normalsize \em in partial fulfillment of the requirements\par
+             for the award of the degree of \par}
+           \vskip 5ex%
+           {\bf MASTER OF TECHNOLOGY}
+           \vskip 4ex%
+   \end{center}          
+ \vspace*{0.25in}
+    \centerline{\includegraphics[height=45mm, width=45mm]{figures/IIST_logo.png}}
+    \vspace*{0.25in}
+  \begin{center}
+    {\bf \large \MakeUppercase{Department of Mathematics}\par} 
+    {\bf INDIAN INSTITUTE OF SPACE SCIENCE AND TECHNOLOGY\\
+    Thiruvananthapuram - 695547}
+    \vglue 0.50em
+    {\bf \large May 2016\par }%\@date}\par
+  \end{center}
+%\parskip 8pt
+
+ 
+            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+%\input{certificate}
+\newpage
+\vspace*{36pt}
+\begin{center}
+{\Large \bf CERTIFICATE}
+ \end{center}  
+ %\vskip 25pt
+ %\thispagestyle{empty}
+\typeout{Certificate}
+%\setcounter{page}{0}
+\pagenumbering{roman}
+
+\vspace*{0.5in}
+
+\noindent This is to certify that the thesis titled '{\bf  A Study on Deep Multi-layer Kernel Machines}', submitted by {\bf Akhil P M}, to the Indian Institute of Space Science and Technology, Thiruvananthapuram, for the award of the degree of {\bf MASTER OF TECHNOLOGY}, is a bona fide
+record of the research work done by him under my supervision. The contents of this thesis, in full or in parts, have not been submitted to any other Institute or University for the award of any degree or diploma.
+
+\vspace*{1.5in}
+
+
+
+\parbox{3in}{
+\noindent {\bf Dr. Sumitra S} \\
+\noindent             Supervisor \\ 
+\noindent Department of Mathematics\\
+\noindent IIST\\
+} 
+\hspace*{0.70in} 
+\parbox{3.3in}{
+\noindent {\bf K.S S Moosath} \\
+\noindent             Head of Department\\ 
+\noindent Department of Mathematics\\
+\noindent IIST\\
+}  
+
+\vspace*{0.25in}
+
+\noindent Place: Thiruvananthapuram\\
+May, 2016
+\clearpage
+%%---------------------------------------------
+\clearpage
+\vspace*{36pt}
+%\declaration
+\begin{center}
+{\large \bf DECLARATION}
+\end{center}
+
+
+\vspace*{24pt}
+
+\noindent I declare that this thesis titled '{\bf A Study on Deep Multi-layer Kernel Machines}' submitted in fulfillment of the Degree of MASTER OF TECHNOLOGY is a record of original work carried out by me under the supervision of {\bf Dr. Sumitra. S}, and has not formed the basis for the award of any degree, diploma, associateship, fellowship or other titles in this or any other Institution or University of higher learning. In keeping with the ethical practice in reporting scientific information, due acknowledgements have been made wherever the findings of others have been cited.\\
+
+\vspace*{0.5in}
+\hspace*{4.5in} 
+\parbox{2.9in}{
+\noindent  Akhil P M \\
+\noindent SC14M044 \\ 
+}  
+
+\vspace*{0.25in}
+
+\noindent Place: Thiruvananthapuram\\
+May, 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\setstretch{1.3}  % It is better to have smaller font and larger line spacing than the other way round
+
+% Define the page headers using the FancyHdr package and set up for one-sided printing
+\fancyhead{}  % Clears all page headers and footers
+\rhead{\thepage}  % Sets the right side header to show the page number
+\lhead{}  % Clears the left side page header
+
+\pagestyle{fancy}  % Finally, use the "fancy" page style to implement the FancyHdr headers
+
+%% ----------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ----------------------------------------------------------------
+\clearpage  % Declaration ended, now start a new page
+% The Abstract Page
+\setstretch{1.4}
+
+
+%\abstract{
+
+\addtocontents{toc}{\vspace{0em}}
+\begin{center}
+\LARGE\textit{Abstract}
+\end{center}
+\vspace{10 mm}
+\begin{spacing}{1.5}
+Deep learning is one of the prominent class of algorithms among the representation learning techniques used nowadays, producing state of the art results in many complex pattern recognition tasks. These algorithms learn a set of abstract high-level features in a hierarchical fashion with a layerwise model. Theoretical studies indicates that a deep architecture can represent highly varying decision functions in a compact way, which if modelled with a shallow architecture may require exponentially huge number of datapoints and computational units. With the recent rise in computing power using multi-core CPUs and GPUs, fast and efficient training of deep learning algorithms became possible. But almost all of the deep learning algorithms are formulated on top of neural network based models, which is declining the popularity of kernel methods for learning representations.
+
+
+In this thesis, we study multi-layer kernels, a kernel machine equivalent to deep learning algorithms, in supervised and unsupervised learning settings. In unsupervised settings, multi-layer kernels are used for feature learning. We use the formulation of Multi-layer Kernel Machines(MKMs) with KPCA algorithm, which is trained in a greedy layerwise fashion. MKMs are modified by taking a linear combination of multiple kernels in each layer, and such models are called Multi-layer Multiple Kernel Learning(ML-MKL) models. In MKL, the optimal kernel weights are found based on an unsupervised formulation.
+
+In supervised learning settings, we use multi-layer kernels for discriminant analysis and structured output prediction problems. Discriminant analysis with kernel FDA algorithm is studied on shape classification problems, which is giving results comparable with state of the art deep learning algorithms. Multi-layer models score high when representing highly complex decision functions in a compact way. Structured output spaces need very complex decision functions in many cases. This was the primary motive for studying multi-layer kernels in structured output spaces.
+\end{spacing}
+
+\clearpage  % Abstract ended, start a new page
+%% ----------------------------------------------------------------
+
+\setstretch{1.5}  % Reset the line-spacing to 1.3 for body text (if it has changed)
+
+% The Acknowledgements page, for thanking everyone
+
+\acknowledgements{
+\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+Though only my name appears on the cover of this thesis, the work presented in this report would not have been possible without the constant support and encouragement of many great people.
+
+First and foremost, I would like to express my sincere gratitude to my advisor Dr. Sumitra S for the continuous support throughout the work and for her patience, motivation, enthusiasm and immense knowledge. I thank her, especially for showing me the beauty of great mathematical concepts, with the right mix of theory and applications. I also thank her for correcting this thesis and making it to the present form.
+
+I owe my deepest gratitude to Dr. Asharaf S for constantly motivating me and the `anytime' support he offered, even in his busy schedules. The hours-long discussion we used to have often was very insightful. The way he analyzed the results and gave suggestions was very helpful for me to understand the problems with my result-oriented rush.
+
+I would like to thank Prof. Nicholas Sabu and Dr. Deepak T.G for spending their valuable time to help me with the optimization algorithms and statistical methods.
+
+I am very thankful to Shiju S. Nair for his continuous support in multiple roles ranging from concept clearing to implementation hacks. I would like to appreciate Harsha and Govindraj for their generous support in making my understanding clear about convex functions and their optimization techniques.
+
+I am very grateful to Prof. Raju K. George, who sourced me a quality workstation on which much of the work has been done.
+
+I take this as an opportunity to thank all my friends in IIST who made this two years of life very memorable.
+
+Last but not the least, I would like to thank my parents and my sister for their care, love and support throughout my life. 
+%\paragraph*{}  
+}
+\clearpage  % End of the Acknowledgements
+\frontmatter      % Begin Roman style (i, ii, iii, iv...) page numbering
+\begin{comment}
+% Set up the Title Page
+\title  {Project title }
+\authors  {\texorpdfstring
+            {\href{your web site or email address}{your name}}
+            {Author Name}
+            }
+\addresses  {\groupname\\\deptname\\\univname}  % Do not change this here, instead these must be set in the "Thesis.cls" file, please look through it instead
+\date       {\today}
+\subject    {}
+\keywords   {}
+
+	\maketitle
+%% ----------------------------------------------------------------
+
+\setstretch{1.3}  % It is better to have smaller font and larger line spacing than the other way round
+
+% Define the page headers using the FancyHdr package and set up for one-sided printing
+\fancyhead{}  % Clears all page headers and footers
+\rhead{\thepage}  % Sets the right side header to show the page number
+\lhead{}  % Clears the left side page header
+
+\pagestyle{fancy}  % Finally, use the "fancy" page style to implement the FancyHdr headers
+
+%% ----------------------------------------------------------------
+% Declaration Page required for the Thesis, your institution may give you a different text to place here
+%\Declaration{
+
+%\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+
+%I, AUTHOR NAME, declare that this thesis titled, `THESIS TITLE' and the work presented in it are my own. I confirm that:
+
+%\begin{itemize} 
+%\item[\tiny{$\blacksquare$}] This work was done wholly or mainly while in candidature for a research degree at this University.
+ 
+%\item[\tiny{$\blacksquare$}] Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+ 
+%\item[\tiny{$\blacksquare$}] Where I have consulted the published work of others, this is always clearly attributed.
+ 
+%\item[\tiny{$\blacksquare$}] Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+ 
+%\item[\tiny{$\blacksquare$}] I have acknowledged all main sources of help.
+ 
+%\item[\tiny{$\blacksquare$}] Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.
+%\\
+%\end{itemize}
+ 
+ 
+%Signed:\\
+%\rule[1em]{25em}{0.5pt}  % This prints a line for the signature
+ 
+%Date:\\
+%\rule[1em]{25em}{0.5pt}  % This prints a line to write the date
+%}
+%\clearpage  % Declaration ended, now start a new page
+
+%% ----------------------------------------------------------------
+% The "Funny Quote Page"
+%\pagestyle{empty}  % No headers or footers for the following pages
+
+%\null\vfill
+% Now comes the "Funny Quote", written in italics
+%\textit{``Write a funny quote here.''}
+
+%\begin{flushright}
+%If the quote is taken from someone, their name goes here
+%\end{flushright}
+
+%\vfill\vfill\vfill\vfill\vfill\vfill\null
+\clearpage  % Funny Quote page ended, start a new page
+%% ----------------------------------------------------------------
+
+% The Abstract Page
+\addtotoc{Abstract}  % Add the "Abstract" page entry to the Contents
+\abstract{
+\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+
+}
+
+\clearpage  % Abstract ended, start a new page
+%% ----------------------------------------------------------------
+
+\setstretch{1.3}  % Reset the line-spacing to 1.3 for body text (if it has changed)
+
+% The Acknowledgements page, for thanking everyone
+\acknowledgements{
+\addtocontents{toc}{\vspace{1em}}  % Add a gap in the Contents, for aesthetics
+
+
+}
+%\clearpage  % End of the Acknowledgements
+%%
+\end{comment}
+%----------------------------------------------------------------
+
+%\pagestyle{fancy}  %The page style headers have been "empty" all this time, now use the "fancy" headers as defined before to bring them back
+
+
+%% ----------------------------------------------------------------
+\lhead{\emph{Contents}}  % Set the left side page header to "Contents"
+\tableofcontents  % Write out the Table of Contents
+
+
+
+%% ----------------------------------------------------------------
+\lhead{\emph{List of Figures}}  % Set the left side page header to "List if Figures"
+
+\listoffigures  % Write out the List of Figures
+
+%% ----------------------------------------------------------------
+\lhead{\emph{List of Tables}}  % Set the left side page header to "List of Tables"
+
+\listoftables  % Write out the List of Tables
+
+%% ----------------------------------------------------------------
+\setstretch{1.5}  % Set the line spacing to 1.5, this makes the following tables easier to read
+\clearpage  % Start a new page
+\lhead{\emph{List of Abbreviations}}  % Set the left side page header to "Abbreviations"
+\listofsymbols{ll}  % Include a list of Abbreviations (a table of two columns)
+{
+ CRF & Conditional Random Field \\
+ DBN & Deep Belif Networks \\
+ KFDA & Kernel Fisher Discriminant Analysis \\
+ MKL & Multiple Kernel Learning \\
+ MKM & Multi-layer Kernel Machines \\
+ ML-MKL & Multi-layer Multiple Kernel Learning \\
+ MR & Margin Rescaling \\
+ NNet & Neural Network with one hidden layer \\
+ PCA & Principal Component Analysis \\
+ RKHS & Reproducing Kernel Hilbert Space \\
+ SMO & Sequential Minimal Optimization \\
+ SNE & Stochastic Neighbur Embedding \\
+ SR & Slack Rescaling \\
+ SVM & Support Vector Machines \\
+ tSNE & t-distributed Stochastic Neighbur Embedding \\
+}
+%\nomenclature{$a$}{alphabet}
+%\printglossary
+%\section*{Nomenclature}
+%\begin{tabular}{rl}
+%$a$ & Alphabet
+%\clearpage  %Start a new page
+%\lhead{\emph{Nomenclature}}  % Set the left side page header to "Symbols"
+%\listofnomenclature{lll}  
+%{
+%$c$ & Specific heat at constant pressure & $J/(kg K)$\\
+%$D$&Diameter of circular cylinder& $m$\\
+%$h$ & Heat transfer coefficient & $W/(m^2K)$\\
+%$k$& Thermal conductivity & $W/(m K)$\\
+%$Nu$ & Surface Nusselt number&\\
+%$s$ & Distance measured along cylinder surface from D= 70 mm & $m$\\
+%$T$ &Temperature & $^oC$\\
+%$\Delta T$ & Temperature difference of wall and ambient & $^oC$\\
+%$Ra$ & Rayleigh number &$g\beta\Delta TL^3Pr/ \nu^2$\\
+%$Ra^*$& Modified Rayleigh number & $g\beta q_{w}D^{4}/\lambda\alpha\nu$\\
+%$p$ & pressure & $Pa$\\
+%
+%$Pr$& Prandtl number&\\
+%$u$ & velocity component in x- direction &$m/s$\\
+%$x$ & x-coordinate & m\\
+%$y$ & y-coordinate & m\\
+%$z$& Distance measured radially from cylinder surface & $m$\\
+%$\alpha$& Angle measured in ccw direction from bottom & $rad$\\
+%$\beta$& taper angle for cylinder of varying cross section & $^{0}$\\
+%$\lambda$& Ratio of radial distance from cylinder  surface to  diameter& \\ 
+%$\delta$& Distance measured radially from the cylinder surface & $m$\\ 
+%$\theta$& Angle  measured in ccw direction from bottom &  $^{0}$\\
+%
+%$\nu$&Kinematic viscosity & $m^2/s$\\
+%$\upsilon$ & Velocity component in y- direction &$m/s$\\
+%$\phi$& Transport variable&\\
+%$\rho$ & Density & $kg/m^3$\\
+%
+%\vspace{5em}\\
+%\vspace{0em} & \large \bf Subscripts & \vspace{0em}\\
+%$\theta$& Angular coordinate\\
+%$a$ & Ambient conditions&\\
+%$avg$ & Average\\
+%$w$ & Wall&\\
+%\vspace{0em} &\large \bf Superscripts & \\
+%$\bar{}$ & average &\\
+%
+%
+%
+%}
+
+
+
+
+%% ----------------------------------------------------------------
+\mainmatter	  % Begin normal, numeric (1,2,3...) page numbering
+\pagestyle{fancy}  % Return the page headers back to the "fancy" style
+
+% Include the chapters of the thesis, as separate files
+% Just uncomment the lines as you write the chapters
+\lhead{}
+
+\input{chapter1} % Introduction & Literature Review
+
+\input{chapter2} % unbounded cylinder
+
+\input{chapter3} % Confinement above
+%\newpage
+%\thispagestyle{empty}
+%\mbox{}
+\input{chapter4} % Confinement below
+
+\input{chapter5} %  Cylinder of varying cross section
+\input{chapter6} %  Conclusion n future studies
+%\input{Chapters/Chapter7} % 
+
+%% ----------------------------------------------------------------
+% Now begin the Appendices, including them as separate files
+
+
+\appendix % Cue to tell LaTeX that the following 'chapters' are Appendices
+\addtocontents{toc}{\vspace{2em}} % Add a gap in the Contents, for aesthetics
+
+\input{appendix}	% Appendix Title
+
+%\input{Appendices/AppendixB} % Appendix Title
+
+%\input{Appendices/AppendixC} % Appendix Title
+
+\addtocontents{toc}{\vspace{2em}}  % Add a gap in the Contents, for aesthetics
+\backmatter
+
+%% ----------------------------------------------------------------
+%\label{Bibliography}
+%\%lhead{\emph{Bibliography}}  % Change the left side page header 	to "Bibliography"
+%\bibliographystyle{plain}  % Use the "unsrtnat" BibTeX style for formatting the Bibliography
+%\bibliography{bibo}  % The references (bibliography) information are stored in the file named "Bibliography.bib"
+\begin{thebibliography}{9}
+\bibitem[Cho]{saul} Y. Cho, L.K. Saul, Kernel Methods  for Deep Learning.
+\newblock \emph{Advances in Neural Information Processing Systems(NIPS)} Volume 22, 342 -- 350, 2009.
+
+\bibitem[Bengio, 2007]{bengioAI} Yoshua Bengio and Yann LeCun, Scaling learning algorithms towards AI.  in Bottou, L. and Chapelle, O. and DeCoste, D. and Weston, J. (Eds) \newblock \emph{Large-Scale Kernel Machines}, MIT Press,  2007.
+
+\bibitem[Bengio, 2013]{bengioRL} Yoshua Bengio, Aaron Courville and Pascal Vincent, Representation Learning: A Review and New Perspectives. \newblock \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence(TPAMI)} Volume 35, 1798--1828, August 2013.
+
+\bibitem[Bengio, 2009]{bengioLDA} Yoshua Bengio, Learning Deep Architectures for AI. \newblock \emph{Foundations and Trends in Machine Learning} Volume 2, 1 -- 127, January 2009.
+
+\bibitem[Graham]{cifarBest}Benjamin Graham, Fractional Max-pooling. \newblock \emph{arxiv:cs/arXiv:1412.6071}, 2014.
+
+\bibitem[Wan]{mnistBest} Li Wan, Matthew Zeiler, Sixin Zhang, Yann LeCun and  Rob Fergus, Regularization of Neural Networks using DropConnect. \newblock \emph{JMLR Proceedings} Volume 28, 1058 -- 1066, 2013.
+
+\bibitem[Hinton 2012]{speechBest} Geoffrey Hinton, Li Deng, Dong Yu, George Dahl, Abdel-rahman Mohamed, Navdeep Jaitly, Andrew Senior, Vincent Vanhoucke, Patrick Nguyen, Tara Sainath and Brian Kingsbury, Deep Neural Networks for Acoustic Modeling in Speech Recognition. \newblock \emph{IEEE Signal Processing Magazine} Volume 29, 82 -- 97, 2012.
+
+\bibitem[Alex]{imagenet} Alex Krizhevsky, Ilya Sutskever and Geoffrey E. Hinton, ImageNet Classification with Deep Convolutional Neural Networks. \newblock \emph{Neural Information Processing Systems(NIPS)}, 1106 -- 1114, 2012.
+
+\bibitem[Collobert]{nlpBest} R. Collobert and J. Weston. A unified architecture for natural language processing: Deep neural networks with multitask learning. \newblock \emph{International Conference on Machine Learning(ICML)}, 2008.
+
+\bibitem[Hinton, 2006]{hintonDBN} Geoffrey E. Hinton, Simon Osindero, and Yee Whye Teh, A fast learning algorithm for deep belief nets. \newblock \emph{Neural Computation}, 2006.
+
+\bibitem[LeCun]{lecunnCNN} Yann LeCun, L\'{e}on Bottou, Yoshua Bengio and Patrick Haffner, Gradient based learning applied to document recognition. \newblock \emph{Proceedings of the IEEE}, 2278–2324,
+November 1998.
+
+\bibitem[Raina]{gpu1} Rajat Raina, Anand Madhavan and Andrew Y. Ng, Large-scale Deep Unsupervised Learning using Graphics Processors. \newblock \emph{International Conference on Machine Learning}, 2009.
+
+\bibitem[Dean]{gpu2} Jeffrey Dean, Greg S. Corrado, Rajat Monga, Kai Chen, Matthieu Devin, Quoc V. Le, Mark Z. Mao, Marc’Aurelio Ranzato, Andrew Senior, Paul Tucker, Ke Yang and Andrew Y. Ng, Large Scale Distributed Deep Networks. \newblock \emph{Advances in Neural Information Processing Systems}, 1223 -- 1231, 2012.
+
+\bibitem[Graphlab]{graphlab} Y. Low, J. Gonzalez, A. Kyrola, D. Bickson, C. Guestrin and J. Hellerstein, GraphLab: A New Framework For Parallel Machine Learning. \newblock \emph{26th Conference on Uncertainty in Artificial Intelligence (UAI)}, 2010.
+
+\bibitem[Hugo]{dbn}Hugo Larochelle, Dumitru Erhan, Aaron Courville, James Bergstra, and Yoshua Bengio, Online companion for the paper An empirical evaluation of deep architectures on problems with many factors of variation. \newblock [Online]. Available: \url{http://www.iro.umontreal.ca/ ∼ lisa/twiki/bin/view.cgi/Public/DeepVsShallowComparisonICML2007} 2014.
+
+\bibitem[Smola]{kpca} Bernhard Sch\"{o}lkopf, Alexander Smola and Klaus-Robert M\"{u}ller, Nonlinear Component Analysis As a Kernel Eigenvalue Problem. \newblock \emph{Journal of Neural Computation} Volume 10, 1299--1319, 1998.
+
+\bibitem[Zhuang, 2011]{zhuang} J. Zhuang, Jialei Wang, Steven C.H Hoi, Xiangyang Lan, Unsupervised Multiple Kernel Learning. \newblock \emph{Journal of Machine Learning Research(JMLR)} Volume 20, 129--144, 2011.
+
+\bibitem[Gert]{mkl} Gert R. G. Lanckriet, Nello Cristianini, Peter L. Bartlett, Laurent El Ghaoui, and Michael I. Jordan, Learning the kernel matrix with semidefinite programming. \newblock \emph{Journal of Machine Learning Research}, Volume 5, 27--72, 2004.
+
+\bibitem[scikit-learn]{scikit} F. Pedregosa, G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel, M.Blondel, P. Prettenhofer, R. Weiss, V. Dubourg, J. Vanderplas, A. Passos, D. Cournapeau, M. Brucher, M. Perrot, and E. Duchesnay, Scikit-learn: Machine Learning in Python. \newblock \emph{Journal of Machine Learning Research(JMLR)} Volume 12, 2825--2830, 2011.
+
+\bibitem[MNIST]{mnist} Y. LeCun and C. Cortes, The MNIST database of handwritten digits. \newblock \url{http://yann.lecun.com/exdb/mnist/}.
+
+\bibitem[Maaten]{tsne} L.J.P. van der Maaten and G.E. Hinton, Visualizing High-Dimensional Data Using t-SNE. \newblock \emph{Journal of Machine Learning Research(JMLR)}, volume 9, 2579--2605, 2008. 
+
+\bibitem[Tsochantaridis]{joachims_struct} I. Tsochantaridis, T. Joachims, T. Hoffman and Y. Altun, Large Margin Methods for Structured and Interdependent Output SPaces. \newblock \emph{Journal of Machine Learning Research(JMLR) 6}, 1453--1484, 2005.
+
+\bibitem[Joachims]{joachims_cutting} T. Joachims, T. Finely, C. John Nu, Cutting-Plane Training on Structural SVMs. \newblock \emph{Journal of Machine Learning 77(1)}, 27--59, 2009.
+
+\bibitem[Kelley]{cutting_plane} J.E Kelley, The Cutting-plane Method for Solving Convex Programs. \newblock \emph{Journal of the Society for Industrial and Applied Mathematics(SIAM) 8}, 703--712, 1960.
+
+\bibitem[Zhuang]{2l_mkl} Jinfeng Zhuang, Ivor W. Tsang and Steven C.H. Hoi, Two-layer Multiple Kernel Learning. \newblock \emph{International Conference on Artificial Intelligence and Statistics (AISTATS)}, pp 909--917, 2011. 
+
+\bibitem[Ilyes]{deep_mkl} Ilyes Rebai, Yassine BenAyed and Walid Mahdi, Deep Multilayer Multiple Kernel Learning. \newblock \emph{Journal of Neural Computing and Applications}, pp 1--10, 2015.
+
+\bibitem[Corinna]{corinna}Corinna Cortes, Mehryar Mohri, and Afshin Rostamizadeh, Two-stage learning kernel algorithms. \newblock \emph{International Conference on Machine Learning}, pp 239--246, 2010.
+
+\bibitem[Sebastian]{kfda} Sebastian Mika, Gunnar R\"{a}tsch, Jason Weston, Bernhard Sch\"{o}lkopf, and Klaus-Robert M\"{u}ller, Fisher Discriminant Analysis With Kernels. \newblock \emph{Journel of Neural Networks for Signal Processing}, pp 41--48, 1999.
+
+\bibitem[Lafferty]{crf} J. Lafferty, A. McCallum, and F. Pereira, Conditional random fields: Probabilistic models for segmenting and labeling sequence data. \newblock \emph{International Conference on Machine Learning}, 2001.
+
+\bibitem[$\textrm{SVM}^{\textrm{struct}}$]{svm_struct} Thorsten Joachims, $\textrm{SVM}^{\textrm{struct}}$: Support Vector Machine for Complex Outputs. \newblock \url{http://www.cs.cornell.edu/People/tj/svm_light/svm_struct.html}
+\end{thebibliography}
+
+
+\clearpage
+\addcontentsline{toc}{section}{\bf Source Code}
+\section*{Source Code}
+All the code-works done as part of this project is publicly hosted in github. The source code is available in the following repository\\
+\url{https://github.com/akhilpm/Masters-Project/}
+\vspace{4 em}
+%\begin{center}
+\addcontentsline{toc}{section}{\bf List of Papers based on thesis}
+\section*{\bf List of papers based on thesis}
+%\end{center}
+
+\vspace{5 mm}
+%1. Akhil P M, Asharaf S, Sumitra S, {\em Unsupervisd MKL in Multi-layer Kernel Machines}, Conference Name, Place, Status\\
+1. Akhil P M, Asharaf S, Sumitra S, {\em Unsupervisd MKL in Multi-layer Kernel Machines}(paper under preparation).
+\vspace{2 em}
+\end{document}  % The End
+%%	 ----------------------------------------------------------------

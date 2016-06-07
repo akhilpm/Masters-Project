@@ -185,9 +185,9 @@ def select_features(trainX_kpca, testX_kpca, trainY):
 	trX = trainX_kpca[:10000,]
 	trY = trainY[:10000]
 
-	param = np.arange(15,301)
+	param = np.arange(15,301,10)
 	performance = np.zeros(len(param))
-	parameters = {'n_neighbors' : list(np.arange(15)+1)}
+	parameters = {'n_neighbors' : list(np.arange(7, 15, 2)+1)}
 	clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
 
 	for i in range(len(param)):
@@ -200,9 +200,10 @@ def select_features(trainX_kpca, testX_kpca, trainY):
 		clf.fit(trX_new, trY)
 		pred = clf.predict(cvX_new)
 		performance[i] = accuracy_score(cvY, pred)*100
+		print(param[i]),
 
 	bestK = param[np.argmax(performance)]	
-	#print(bestK)
+	print('\n')
 
 	selector = SelectKBest(f_classif, k=bestK)
 	selector.fit(trainX_kpca, trainY)
@@ -219,8 +220,8 @@ def main():
 	warnings.filterwarnings("ignore")
 
 	#set the parameters
-	no_of_layers = 1
-	no_of_kernels = 5
+	no_of_layers = 4
+	no_of_kernels = 7
 	kparam = np.array([0,3,3])
 	coeff = np.zeros((no_of_layers, no_of_kernels))
 
@@ -259,7 +260,16 @@ def main():
 		selector.fit(trainX_kpca, trainY)
 		trainX = selector.transform(trainX_kpca)
 		testX = selector.transform(testX_kpca)
+		#parameters = {'n_neighbors' : list(np.arange(20)+1)}
+		#clf = GridSearchCV(KNeighborsClassifier(weights='distance', n_jobs=-1), parameters)
+		clf = svm.SVC(kernel=arc_cosine, cache_size=2048)
+		clf.fit(trainX, trainY)
+		print('no. of SV = %d' %len(clf.support_))
+		print('no of support vectors per class')
+		print(clf.n_support_)
 
+		pred = clf.predict(testX)
+		print(accuracy_score(testY, pred))	
 
 		print(trainX_kpca.shape)
 		print(trainX.shape)

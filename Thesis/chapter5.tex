@@ -1,0 +1,99 @@
+\chapter{Multi-layer Kernels in Structured Output Spaces}
+\label{chap_struct}
+
+This chapter focuses on evaluating multi-layer arc-cosine kernels on structured output prediction problems. The contents of this chapter are organized as follows; section \ref{chap5_intro} gives a brief description about the large margin formulation of pattern recognition problem on structured output spaces, section \ref{chap5_exp} talks about the result of empirical study on multi-class and multi-label classification problems and section \ref{chap5_conc} concludes the chapter.
+
+\section{SVM in Structured Output Spaces}
+\label{chap5_intro}
+Typically machine learning algorithms are designed to produce flat real valued outputs; in the case of classification problems the output is a class label, for regression the output is a real number. For structured output learning algorithms, the output space has structured and interdependent variables, which is usually stored and processed as multi-dimensional arrays. For example, in the case of natural language parsing the output is a parse tree, in the case of image segmentation the output is the four 2D cordinates of bounding box surrounding the object. Two popular algorithms which works well in this domain are Conditional Random Fields(CRF\nomenclature{CRF}{Conditional Random Field}) proposed by \cite{crf} et al. and Structural SVMs proposed by \cite{joachims_struct} et al. In this project, we did our study on structural SVMs.
+
+Structural SVMs are first introduced by \cite{joachims_struct} et al. in 2005, and  studied by \cite{joachims_cutting} et al. for simplifying the optimization problem while dealing with exponentially huge number of constraints. In particular, the number of constraints in the formulation of StructSVM is equal to the cardinality of the output space(which is exponential or even infinite). So decomposition methods like SMO\nomenclature{SMO}{Sequential Minimal Optimization} which process each constraints explicitly is not suitable for these kind of problems. \cite{joachims_cutting} et al. proved that the optimization problem can be solved efficiently using cutting plane algorithm proposed by \cite{cutting_plane}. They also proved that the number of iterations are independent of the number of training examples and provided an upper bound on the number of iterations.  
+
+\subsection{StructSVM : Formulation}
+Structured output prediction describes the problem of learning a function
+\[ h: \mathcal{X} \longrightarrow \mathcal{Y} \]
+where $\mathcal{X}$ is the input space and $\mathcal{Y}$ is the output space(structured). To learn $h$, we assume that a training sample of input-output pairs
+\[ S = ((x_1, y_1), \ldots, (x_n, y_n)) \in (\mathcal{X} \times \mathcal{Y})^n \]
+is available and drawn i.i.d from a joint distribution P($\mathcal{X},\mathcal{Y}$). Following empirical risk minimization principle, we will find an $h \in \mathcal{H}$ that minimizes the empirical risk
+\[ R_s^{\bigtriangleup} = \frac{1}{n} \sum_{i=1}^n \bigtriangleup(y_i, h(x_i)) \]
+Here $\bigtriangleup(y, \overline{y})$ denotes the \textbf{loss} associated with predicting $\overline{y}$ when $y$ is the correct output. The formulation assumes that the loss function is arbitrary and should satisfy the follwing requirments. 
+\begin{equation*}
+\bigtriangleup(y, \overline{y}) = 
+\begin{cases}
+ > 0 \textrm{ for } y \neq \overline{y} \\
+ = 0 \textrm{ for } y = \overline{y}
+ \end{cases}
+\end{equation*}
+StructSVM selects an $h \in \mathcal{H}$ that minimizes a regularized empirical risk on $S$. The general idea here is to learn a discriminant function $\mathnormal{f} : \mathcal{X} \times \mathcal{Y} \longrightarrow \mathbb{R}$ over input-output pairs from which one derives a prediction by maximizing $\mathnormal{f}$ over all $y \in \mathcal{Y}$ for a given input $x$.
+\[ h_w(x) =  \underset{y \in \mathcal{Y}}{\arg\max} \mathnormal{f}_w(x,y) \]
+We assume that $\mathnormal{f}_w(x,y)$ is linear in some combined feature space relating x and y, denoted as $\Psi(x,y)$.
+\[ \mathnormal{f}_w(x,y) = (w \cdot \Psi(x,y)) \]
+Here $w \in \mathbb{R}^N$ is the parameter vector. Intuitively we can think of $\mathnormal{f}_w(x,y)$ as a compatibility function that measures how well the output $y$ matches the given input $x$(\cite{joachims_cutting} et al.). This combined feature representation is required in the formulation, since we assumed that the sample $S$ is drawn from a joint distribution P($\mathcal{X},\mathcal{Y}$). Depending upon the structure of the output space, $\Psi(x,y)$ is defined separately for different problem instances.
+
+\subsection{Margin Rescaling(MR) Formulation}
+In order to take the loss into consideration, we modify the soft-margin formulation used in SVMs. The soft-margin formulation is given by
+\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{n} \sum_{i=1}^n \xi_i \]
+\[ \textrm{s.t } \forall i \textrm{, } \forall \overline{y} \in \mathcal{Y}\setminus y_i \textrm{  :  } w^T[\Psi(x_i, y_i) - \Psi(x_i, \overline{y})] \geq 1 - \xi_i \textrm{, } \xi_i \geq 0 \]
+Here $\xi_i$ is the slack variable and $C$ is the regularization parameter.
+\[ \xi_i = \max\{ 0, \max_{y \in \mathcal{Y}\\y_i}(1 - w^T[\Psi(x_i, y_i) - \Psi(x_i, \overline{y})]) \} \]
+As we have mentioned previously, this optimization problem is intractable for decomposition methods like SMO, since we have $\mathcal{O}(n|\mathcal{Y}|)$ constraints in the formulation. In Margin Rescaling\nomenclature{MR}{Margin Rescaling} formulation, the margin is adjusted according to the loss. In particular, we adjust the position of the hinge by keeping its slope fixed. The loss in MR formulation is computed as
+\[ \bigtriangleup_{MR}(y, h_w(x)) =  \underset{\overline{y} \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y}) - (w^T[\Psi(x, y) - \Psi(x, \overline{y})]) \}  \textrm{ } \geq  \bigtriangleup(y, h_w(x))\]
+and slack is obtained as $\xi = \max\{0, \bigtriangleup_{MR}(y, h_w(x))\}$. This leads to the following formulation
+\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{n} \sum_{i=1}^n \xi_i \]
+\[ \textrm{s.t } \forall \overline{y_1} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_1, y_1) - \Psi(x_1, \overline{y_1})] \geq \bigtriangleup(y_1, \overline{y_1}) - \xi_1 \]
+\[ \vdots \]
+\[ \textrm{s.t } \forall \overline{y_n} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_n, y_n) - \Psi(x_n, \overline{y_n})] \geq \bigtriangleup(y_n, \overline{y_n}) - \xi_n \]
+Intuitively, the constraints ensures that the score of the correct label $w^T\Psi(x_i, y_i)$ must be greater than all other scores $w^T\Psi(x_i, \overline{y_i}) \textrm{, } \forall \overline{y_i} \in \mathcal{Y} \setminus y_i$ by a required margin. In MR formulation, the margin is $\bigtriangleup(y_i, \overline{y_i})$.
+
+\subsection{Slack Rescaling(SR) Formulation}
+In Slack Rescaling\nomenclature{SR}{Slack Rescaling} formulation, the slack variables are rescaled according to the loss. In particular, the slope of the hinge loss function is adjusted while keeping its position fixed. In SR formulation the margin is 1. The loss in SR formulation is computed as
+\[ \bigtriangleup_{SR}(y, h_w(x)) =  \underset{\overline{y} \in \mathcal{Y}}{\max}\{ \bigtriangleup(y, \overline{y})(1 - (w^T[\Psi(x, y) - \Psi(x, \overline{y})) \} \]
+and slack is obtained as $\xi = \max\{0, \bigtriangleup_{SR}(y, h_w(x))\}$. This leads to the following formulation
+\[\underset{w, \xi \geq 0}{\min} \quad \frac{1}{2} \norm{w}^2 + \frac{C}{n} \sum_{i=1}^n \xi_i \]
+\[ \textrm{s.t } \forall \overline{y_1} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_1, y_1) - \Psi(x_1, \overline{y_1})] \geq 1 - \frac{\xi_1}{\bigtriangleup(y_1, \overline{y_1})} \]
+\[ \vdots \]
+\[ \textrm{s.t } \forall \overline{y_n} \in \mathcal{Y} \textrm{  :  } w^T[\Psi(x_n, y_n) - \Psi(x_n, \overline{y_n})] \geq 1 - \frac{\xi_n}{\bigtriangleup(y_n, \overline{y_n})} \]
+Both of the above formulation has n slack variables, hence it is called n-slack formulation. These formulations can be converted into 1-slack formulation by summing up all the slack variables(\cite{joachims_cutting} et al.). n-slack formumations have $\mathcal{O}(n|\mathcal{Y}|)$ constraints.
+
+The solution space of this problem is a compact polyhedral convex set. The cutting plane algorithm finds the most violating constraint corresponding to each training example and add it to the working set. After each addition to the working set, we find a solution across all the constraints in working set. This effectively shrinks the size of the version space in a speedy manner. As the iteration continues, the number of constraint violations decreases and the algorithm converges. Every single cut in the convex set corresponds to a constraint violation. Instead of doing a step by step updation, the cutting plane algorithm cuts down a portion of the version space which results in faster convergence.
+\section{Experiments} 
+\label{chap5_exp}
+Empirical study was conducted on multi-class and multi-label classification problems. For multi-class problems the loss function used was the absolute difference between labels, and for multi-label problems loss function was the hamming distance between labels expressed in binary form. Since the output space was finite, we used exhaustive search over $\mathcal{Y}$ in both cases, while finding the most violated constraints. Multi-label and multi-class classification problems are the simplest problem instances that can be studied using StructSVM, since their output space is finite.
+
+The combined feature map $\Psi(x,y)$ was constructed as follows. Let $x \in \mathbb{R}^d$ and $k$ be the number of classes. Suppose $x$ is represented as $1:x_1, \ldots, d:x_d$. Then for multi-class problems $\Psi(x,y)$ was obtained by shifting the indices by $(y-1) \times d$ positions; i.e.,
+\[ \Psi(x,y) = (y-1) \times d+1:x_1, \ldots, (y-1) \times d+d:x_d \]
+For multi-label classification problems, we took the binary representation of $y$ and from that we extracted all bit positions that are ON. Then $\Psi(x,y)$ is computed by applying the same shifting to all the extracted indices.
+
+Implementation was done using \cite{svm_struct} library, by modifying its API functions for multi-label and multi-class problems. Table \ref{chap5_tab1} lists the results of empirical study (value shown is the loss in percentage). The synthetic dataset was a multi-class problem instance available in \cite{svm_struct} library. Here the comparison was made between multi-layer (arc-cosine)kernel machines and commonly used single layer kernel machines.
+
+\renewcommand{\arraystretch}{1.2}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|}
+	\hline
+	\textbf{Dataset} & \textbf{Arc-Cosine Kernel} & \textbf{Other Kernel(best)}\\
+	\hline
+	Scene Segentation & 30.35 & 30.60 \\
+	(multilabel - 6 class) & & \\
+	\hline
+	Vehicle Dataset & 26.48 & 24.90 \\
+	(multiclass - 4 class) & & \\
+	\hline
+	Iris Dataset & 1.67 & 3.33 \\
+	(multiclass - 3 class) & & \\
+	\hline
+	Breast Cancer Wiscosin & 0.98 & 0.98 \\
+	(binary) & & \\
+	\hline
+	Synthetic Data & 33.85 & 32.55 \\
+	(multiclass - 7 class) & & \\
+	\hline
+\end{tabular}
+\caption{Performance comparison of multi-layer arc-cosine kernel to other kernels in StructSVM framework.}
+\label{chap5_tab1}
+\end{table}
+\renewcommand{\arraystretch}{1}
+
+\section{Conclusion}
+\label{chap5_conc}
+In this chapter, we studied multi-layer kernels in structured output spaces. The experimental study was done on multi-label and multi-class problem instances. The results are competetive with single layer kernel machines. Multi-layer architectures are found to be effective in complex pattern recognition tasks. Hence the discriminating power of these multi-layer kernels must be tested in more complex structured output spaces on problems like natural language parsing, protein sequence alignment prediction etc.  
